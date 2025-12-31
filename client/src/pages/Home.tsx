@@ -38,8 +38,8 @@ export default function Home() {
               className="h-1 bg-gradient-to-r from-transparent via-primary/50 to-transparent absolute -bottom-2 left-0" 
             />
           </div>
-          <p className="text-xl md:text-2xl text-muted-foreground font-serif mt-4 italic">
-            Connecting our hearts, one message at a time
+          <p className="text-xl md:text-2xl text-primary/70 font-serif mt-4 italic">
+            Ángel and Sarai, dos corazones, una historia.
           </p>
         </motion.header>
 
@@ -57,9 +57,9 @@ export default function Home() {
               className="bg-white/60 backdrop-blur-sm p-6 rounded-2xl border border-primary/10 text-center shadow-lg transform rotate-1 hover:rotate-0 transition-transform duration-300"
             >
               <p className="font-heading text-2xl text-primary/80 leading-relaxed">
-                "In all the world, there is no heart for me like yours. In all the world, there is no love for you like mine."
+                "En todo el mundo, no hay corazón para mí como el tuyo. En todo el mundo, no hay amor para ti como el mío."
               </p>
-              <p className="mt-4 font-serif text-sm text-muted-foreground">— Maya Angelou</p>
+              <p className="mt-4 font-serif text-sm text-muted-foreground">— Sarai & Angel</p>
             </motion.div>
           </div>
 
@@ -76,7 +76,7 @@ export default function Home() {
           transition={{ delay: 1.5, duration: 1 }}
           className="mt-16 text-center text-primary/40 text-sm font-serif"
         >
-          Made with love, just for us.
+          Made with love, just for Sarai & Angel.
         </motion.footer>
 
       </div>
