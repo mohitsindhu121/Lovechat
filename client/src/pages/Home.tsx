@@ -1,11 +1,15 @@
 import { FallingHearts } from "@/components/FallingHearts";
 import { LoveCalendar } from "@/components/LoveCalendar";
 import { ChatBox } from "@/components/ChatBox";
+import { BackgroundMusic } from "@/components/BackgroundMusic";
 import { motion } from "framer-motion";
 
 export default function Home() {
   return (
     <div className="min-h-screen relative bg-gradient-to-b from-rose-50 to-white overflow-hidden">
+      {/* Background Music Player */}
+      <BackgroundMusic />
+      
       {/* Background Effects */}
       <FallingHearts />
       
