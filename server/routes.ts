@@ -15,12 +15,18 @@ export async function registerRoutes(
 
   app.post(api.messages.create.path, async (req, res) => {
     try {
+      console.log("Received message create request:", {
+        ...req.body,
+        senderAvatar: req.body.senderAvatar ? "base64..." : null,
+        imageUrl: req.body.imageUrl ? "base64..." : null
+      });
       const input = api.messages.create.input.parse(req.body);
       const message = await storage.createMessage(input);
       res.status(201).json(message);
     } catch (err) {
+      console.error("Error creating message:", err);
       if (err instanceof z.ZodError) {
-        res.status(400).json({ message: err.errors[0].message });
+        res.status(400).json({ message: err.errors[0].message, details: err.errors });
       } else {
         res.status(500).json({ message: "Internal Server Error" });
       }
