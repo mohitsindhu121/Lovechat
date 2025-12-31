@@ -5,6 +5,7 @@ import { z } from "zod";
 export const messages = pgTable("messages", {
   id: serial("id").primaryKey(),
   sender: text("sender").notNull(),
+  senderAvatar: text("sender_avatar"),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
