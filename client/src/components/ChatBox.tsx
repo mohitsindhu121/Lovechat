@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useState, useRef, useEffect } from "react";
-import { Send, Heart, User, Camera, LogOut } from "lucide-react";
+import { Send, Heart, User, Camera, LogOut, ImageIcon, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { format } from "date-fns";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
@@ -20,7 +20,9 @@ export function ChatBox() {
   const [sender, setSender] = useState(() => localStorage.getItem(STORAGE_KEY_NAME) || "");
   const [avatar, setAvatar] = useState(() => localStorage.getItem(STORAGE_KEY_AVATAR) || "");
   const [hasJoined, setHasJoined] = useState(() => !!localStorage.getItem(STORAGE_KEY_NAME));
+  const [messageImage, setMessageImage] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -30,14 +32,27 @@ export function ChatBox() {
   }, [messages]);
 
   const handleSend = () => {
-    if (!content.trim() || !sender.trim()) return;
+    if ((!content.trim() && !messageImage) || !sender.trim()) return;
     
     createMessage.mutate({
       sender,
       senderAvatar: avatar || null,
-      content,
+      content: content.trim(),
+      imageUrl: messageImage || null,
     });
     setContent("");
+    setMessageImage(null);
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setMessageImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleJoin = (e: React.FormEvent) => {
@@ -194,7 +209,17 @@ export function ChatBox() {
                         {!isMe && (
                           <p className="text-xs font-bold text-primary mb-1">{msg.sender}</p>
                         )}
-                        <p className="leading-relaxed break-words">{msg.content}</p>
+                        {msg.imageUrl && (
+                          <img 
+                            src={msg.imageUrl} 
+                            alt="Message image" 
+                            className="max-w-full rounded-lg mb-2 max-h-64 object-cover"
+                            data-testid={`img-message-${msg.id}`}
+                          />
+                        )}
+                        {msg.content && (
+                          <p className="leading-relaxed break-words">{msg.content}</p>
+                        )}
                         <span className={`text-[10px] mt-1 block opacity-70 ${isMe ? "text-white/80" : "text-muted-foreground"}`}>
                           {msg.createdAt ? format(new Date(msg.createdAt), "h:mm a") : "Just now"}
                         </span>
@@ -208,21 +233,52 @@ export function ChatBox() {
         </div>
 
         {/* Input Area */}
-        <div className="p-4 bg-white border-t border-primary/10">
+        <div className="p-4 bg-white border-t border-primary/10 space-y-3">
+          {messageImage && (
+            <div className="relative inline-block">
+              <img src={messageImage} alt="Preview" className="max-h-40 rounded-xl border border-primary/20" />
+              <button
+                onClick={() => setMessageImage(null)}
+                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white rounded-full p-1 transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
           <form 
             onSubmit={(e) => { e.preventDefault(); handleSend(); }}
             className="flex gap-2"
           >
+            <input 
+              ref={imageInputRef}
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload}
+              className="hidden"
+              data-testid="input-image-upload"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={() => imageInputRef.current?.click()}
+              className="text-primary hover:bg-primary/10"
+              data-testid="button-image-upload"
+            >
+              <ImageIcon className="w-5 h-5" />
+            </Button>
             <Input
               value={content}
               onChange={(e) => setContent(e.target.value)}
               placeholder="Type a lovely message..."
               className="flex-1 bg-secondary/30 border-primary/10 focus:border-primary/50 focus:ring-primary/20 rounded-xl"
+              data-testid="input-message"
             />
             <Button 
               type="submit" 
-              disabled={createMessage.isPending || !content.trim()}
+              disabled={createMessage.isPending || (!content.trim() && !messageImage)}
               className="bg-primary hover:bg-primary/90 text-white rounded-xl w-12 h-10 p-0 shadow-lg shadow-primary/20 transition-transform active:scale-95"
+              data-testid="button-send-message"
             >
               {createMessage.isPending ? (
                 <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
