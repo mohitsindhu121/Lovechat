@@ -93,19 +93,35 @@ export function ChatBox() {
       >
         <Card className="w-full max-w-md p-8 bg-white/90 backdrop-blur border-2 border-primary/20 shadow-2xl">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary relative group">
-              {avatar ? (
-                <img src={avatar} alt="Preview" className="w-full h-full rounded-full object-cover" />
-              ) : (
-                <Heart className="w-8 h-8 fill-primary/20" />
-              )}
-              <label className="absolute inset-0 flex items-center justify-center bg-black/40 rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                <Camera className="w-6 h-6 text-white" />
-                <input type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
-              </label>
+            <h2 className="text-3xl font-heading text-primary mb-4">Join the Love Chat</h2>
+            
+            {/* Profile Picture Upload Section */}
+            <div className="mb-6">
+              <input 
+                ref={imageInputRef}
+                type="file" 
+                accept="image/*" 
+                onChange={handleAvatarChange}
+                className="hidden"
+                data-testid="input-avatar-upload"
+              />
+              <div 
+                onClick={() => imageInputRef.current?.click()}
+                className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3 text-primary relative group cursor-pointer hover:bg-primary/20 transition-colors border-2 border-dashed border-primary/30 hover:border-primary/60"
+              >
+                {avatar ? (
+                  <img src={avatar} alt="Preview" className="w-full h-full rounded-full object-cover" />
+                ) : (
+                  <div className="flex flex-col items-center gap-1">
+                    <Camera className="w-8 h-8 text-primary/60" />
+                    <span className="text-[10px] text-primary/50 font-semibold">Add Photo</span>
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">Click above to upload your photo</p>
             </div>
-            <h2 className="text-3xl font-heading text-primary mb-2">Join the Love Chat</h2>
-            <p className="text-muted-foreground">Set your profile and start chatting ❤️</p>
+            
+            <p className="text-muted-foreground mb-4">Set your profile and start chatting</p>
           </div>
           
           <form onSubmit={handleJoin} className="space-y-4">
@@ -117,12 +133,14 @@ export function ChatBox() {
                 onChange={(e) => setSender(e.target.value)}
                 className="pl-9 h-12 bg-white border-primary/20 focus:border-primary focus:ring-primary/20 text-lg"
                 autoFocus
+                data-testid="input-user-name"
               />
             </div>
             <Button 
               type="submit" 
               className="w-full h-12 text-lg bg-primary hover:bg-primary/90 shadow-lg shadow-primary/25 rounded-xl transition-all hover:-translate-y-0.5"
               disabled={!sender.trim()}
+              data-testid="button-start-chat"
             >
               Start Chatting
             </Button>
