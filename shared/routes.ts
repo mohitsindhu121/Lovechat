@@ -61,5 +61,12 @@ export const api = {
         200: z.custom<typeof movies.$inferSelect>(),
       },
     },
+    delete: {
+      method: "DELETE" as const,
+      path: "/api/movies/:id",
+      responses: {
+        204: z.null(),
+      },
+    },
   },
 };
