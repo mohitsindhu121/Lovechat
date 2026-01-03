@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Quicksand:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Romantic Red & Pink Palette */
+  --background: 350 100% 98%;      /* Very pale pink */
+  --foreground: 345 40% 20%;       /* Dark rose-brown */
+  
+  --primary: 343 85% 50%;          /* Vivid Red/Pink */
+  --primary-foreground: 350 100% 98%;
+
+  --secondary: 340 70% 92%;        /* Soft Pink */
+  --secondary-foreground: 343 85% 40%;
+
+  --muted: 340 30% 95%;
+  --muted-foreground: 343 20% 50%;
+
+  --accent: 343 85% 96%;           /* Very light pink accent */
+  --accent-foreground: 343 85% 50%;
+
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 343 30% 90%;
+  --input: 343 30% 90%;
+  --ring: 343 85% 50%;
+
+  --radius: 1rem;
+
+  /* Custom Font Variables */
+  --font-heading: 'Dancing Script', cursive;
+  --font-serif: 'Playfair Display', serif;
+  --font-sans: 'Quicksand', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased selection:bg-primary/20 selection:text-primary;
+    font-family: var(--font-sans);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+    @apply font-bold tracking-tight text-primary/90;
+  }
+
+  h1 {
+    font-family: var(--font-heading);
+  }
+}
+
+/* Custom Scrollbar for Chat */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--primary) / 0.2);
+  border-radius: 20px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--primary) / 0.4);
+}
