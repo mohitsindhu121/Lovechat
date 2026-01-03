@@ -3,6 +3,9 @@ import { LoveCalendar } from "@/components/LoveCalendar";
 import { ChatBox } from "@/components/ChatBox";
 import { BackgroundMusic } from "@/components/BackgroundMusic";
 import { motion } from "framer-motion";
+import { Link } from "wouter";
+import { Film } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
@@ -19,6 +22,15 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="relative z-10 container mx-auto px-4 py-8 md:py-12 max-w-6xl">
+        
+        {/* Navigation / Actions */}
+        <div className="flex justify-end mb-8">
+          <Link href="/movies">
+            <Button variant="outline" className="bg-white/50 backdrop-blur-sm border-primary/20 hover:bg-primary/5 text-primary">
+              <Film className="mr-2 h-4 w-4" /> Our Movie Tracker
+            </Button>
+          </Link>
+        </div>
         
         {/* Header */}
         <motion.header 
