@@ -11,7 +11,7 @@ import { insertMovieSchema } from "@shared/schema";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, Plus, Info, ChevronLeft, Edit2, Check } from "lucide-react";
+import { Play, Plus, Info, ChevronLeft, Edit2, Check, Trash2 } from "lucide-react";
 import { Link } from "wouter";
 import { Slider } from "@/components/ui/slider";
 import { useState } from "react";
@@ -47,6 +47,16 @@ export default function MovieTracker() {
       queryClient.invalidateQueries({ queryKey: [api.movies.list.path] });
       setEditingId(null);
       toast({ title: "Updated!", description: "Movie progress updated." });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: number) => {
+      await apiRequest("DELETE", `/api/movies/${id}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [api.movies.list.path] });
+      toast({ title: "Movie deleted", description: "The movie has been removed from your list." });
     },
   });
 
@@ -220,18 +230,33 @@ export default function MovieTracker() {
                   <div className="mt-auto space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] text-gray-400">{movie.progress}% Watched</span>
-                      <Button 
-                        size="icon" 
-                        variant="ghost" 
-                        className="h-6 w-6 text-white hover:bg-white/20"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setEditingId(movie.id);
-                          setEditProgress(movie.progress);
-                        }}
-                      >
-                        <Edit2 className="h-3 w-3" />
-                      </Button>
+                      <div className="flex gap-1">
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-6 w-6 text-white hover:bg-white/20"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingId(movie.id);
+                            setEditProgress(movie.progress);
+                          }}
+                        >
+                          <Edit2 className="h-3 w-3" />
+                        </Button>
+                        <Button 
+                          size="icon" 
+                          variant="ghost" 
+                          className="h-6 w-6 text-white hover:bg-red-600/50"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (confirm('Are you sure you want to delete this movie?')) {
+                              deleteMutation.mutate(movie.id);
+                            }
+                          }}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      </div>
                     </div>
 
                     <AnimatePresence>
