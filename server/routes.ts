@@ -15,18 +15,65 @@ export async function registerRoutes(
 
   app.post(api.messages.create.path, async (req, res) => {
     try {
-      console.log("Received message create request:", {
-        ...req.body,
-        senderAvatar: req.body.senderAvatar ? "base64..." : null,
-        imageUrl: req.body.imageUrl ? "base64..." : null
-      });
       const input = api.messages.create.input.parse(req.body);
       const message = await storage.createMessage(input);
       res.status(201).json(message);
     } catch (err) {
-      console.error("Error creating message:", err);
       if (err instanceof z.ZodError) {
         res.status(400).json({ message: err.errors[0].message, details: err.errors });
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    }
+  });
+
+  app.get(api.girlfriend.get.path, async (_req, res) => {
+    const gf = await storage.getGirlfriend();
+    res.json(gf);
+  });
+
+  app.patch(api.girlfriend.update.path, async (req, res) => {
+    try {
+      const input = api.girlfriend.update.input!.parse(req.body);
+      const gf = await storage.updateGirlfriend(input);
+      res.json(gf);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message });
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    }
+  });
+
+  app.get(api.movies.list.path, async (_req, res) => {
+    const movies = await storage.getMovies();
+    res.json(movies);
+  });
+
+  app.post(api.movies.create.path, async (req, res) => {
+    try {
+      const input = api.movies.create.input.parse(req.body);
+      const movie = await storage.createMovie(input);
+      res.status(201).json(movie);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message });
+      } else {
+        res.status(500).json({ message: "Internal Server Error" });
+      }
+    }
+  });
+
+  app.patch("/api/movies/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const input = api.movies.update.input!.parse(req.body);
+      const movie = await storage.updateMovie(id, input);
+      res.json(movie);
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        res.status(400).json({ message: err.errors[0].message });
       } else {
         res.status(500).json({ message: "Internal Server Error" });
       }
