@@ -8,6 +8,7 @@ export interface IStorage {
   getMovies(): Promise<Movie[]>;
   createMovie(movie: InsertMovie): Promise<Movie>;
   updateMovie(id: number, movie: Partial<InsertMovie>): Promise<Movie>;
+  deleteMovie(id: number): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -91,6 +92,10 @@ export class MemStorage implements IStorage {
     const updated = { ...existing, ...update };
     this.movies.set(id, updated);
     return updated;
+  }
+
+  async deleteMovie(id: number): Promise<void> {
+    this.movies.delete(id);
   }
 }
 

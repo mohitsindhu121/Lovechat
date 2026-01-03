@@ -80,5 +80,15 @@ export async function registerRoutes(
     }
   });
 
+  app.delete("/api/movies/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      await storage.deleteMovie(id);
+      res.status(204).end();
+    } catch (err) {
+      res.status(500).json({ message: "Internal Server Error" });
+    }
+  });
+
   return httpServer;
 }
